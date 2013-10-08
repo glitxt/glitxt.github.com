@@ -118,8 +118,18 @@
     		});
 
     		$('#drop')
+                .on('dragover', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                })
+                .on('dragenter', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                })
     			.on('drop',function(e){
-    				fileHandler(e.dataTransfer.files);
+                    e.preventDefault();
+                    e.stopPropagation();
+    				fileHandler(e.originalEvent.dataTransfer.files);
     			})
     			.on('click',function(){
     				$("#file").trigger('click');
