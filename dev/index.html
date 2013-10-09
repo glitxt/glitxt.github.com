@@ -30,8 +30,9 @@
     		font-size: 84px;
     		padding-bottom: 20px;
     	}
-    	.image, #file {
+    	#payload, #file {
     		display: none;
+            cursor: -webkit-zoom-in;
     	}
     	.text, .drop {
     		min-height: 160px;
@@ -39,6 +40,19 @@
     	.drop {
     		cursor: pointer;
     	}
+        #payload .close {
+            opacity: 0.8;
+            color: #FFF;
+            position: absolute;
+            font-size: 23px;
+            top: 25px;
+            right: 45px;
+            cursor: pointer;
+        }
+        #payload .close:hover {
+            opacity: 1;
+        }
+
     </style>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -87,7 +101,10 @@
 	        		<div class="icon glyphicon glyphicon-picture"></div>
 	        		<div class="desc">drop an image here to encode or decode</div>
         		</div>
-        		<img id="image" class="img-responsive">
+            <div id="payload">
+                <img id="image" class="img-responsive">
+                <span class="close glyphicon glyphicon-remove"></span>
+            </div>
         	</div>
         	
         </div>
@@ -106,6 +123,15 @@
 
     		var imageGlitch = null;
 
+            $('#image').click(function(){
+                window.open($(this).attr('src'));
+            });
+            $('#drop .close').click(function(){
+                $('#placeholder').show();
+                $('#text').val("");
+                $('#payload').hide();
+            })
+
     		$('#text').keyup(function(e){
     		  if(e.keyCode == 13) {
     		    alert("glitchified");
@@ -117,7 +143,7 @@
     		  }
     		});
 
-    		$('#drop')
+    		$('#placeholder')
                 .on('dragover', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -148,6 +174,7 @@
 
     				$('#placeholder').hide();
     				$('#text').val("");
+                    $('#payload').show();
     				//$('#image').hide().attr('src','');
 
     				var reader = new FileReader();
@@ -158,7 +185,7 @@
     						$('#text').val(imageGlitch.unglitch());
     					}
 
-    					$('#image').show().attr('src',imageGlitch.getOriginal());
+    					$('#image').attr('src',imageGlitch.getOriginal());
 
     				}
     				reader.readAsArrayBuffer(file);
