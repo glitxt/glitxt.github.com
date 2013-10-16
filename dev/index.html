@@ -116,6 +116,10 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript">
+    var exports = {}; // nodePackageOwnage
+    </script>
+    <script src="http://glitxt.com/glitxt/lib/index.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script>
@@ -137,7 +141,7 @@
     		    alert("glitchified");
     		  } else {
     		  	if(imageGlitch){
-    		  		 var url = imageGlitch.glitch( $(this).val() );
+    		  		 var url = imageGlitch.encode( $(this).val() );
     		  		 $('#image').attr('src',url);
     		  	}
     		  }
@@ -179,13 +183,13 @@
 
     				var reader = new FileReader();
     				reader.onload = function(e) {
-    					imageGlitch = new Glitcher(this.result,file.type);
+    					imageGlitch = new GlitchHelper(this.result,file.type);
 
     					if(imageGlitch.isGlitched()){
-    						$('#text').val(imageGlitch.unglitch());
+    						$('#text').val(imageGlitch.decode());
     					}
 
-    					$('#image').attr('src',imageGlitch.getOriginal());
+    					$('#image').attr('src',imageGlitch.getImage());
 
     				}
     				reader.readAsArrayBuffer(file);
@@ -193,67 +197,33 @@
     			return true;
     		}
 
-    		var Glitcher = function(buffer,type) {
-    			this.buffer = buffer;
-    			this.type = type;
-    		}
+            var GlitchHelper = function(buffer,type){
+                this.buffer = buffer;
+                this.type = type;
+            }
 
-    		Glitcher.prototype.isGlitched = function() {
-    			var ui8aBuffer = new Uint8Array(this.buffer.slice(0));
-    			return ui8aBuffer[ui8aBuffer.length-2] == 0 ? true : false;	
-    		}
+            GlitchHelper.prototype.createObjectURL = function(buffer) {
+                var blob = new Blob([buffer], { type:this.type });
+                var url = webkitURL.createObjectURL(blob);
+                return url;
+            }
 
-    		Glitcher.prototype.unglitch = function() {
-    			var ui8aBuffer = new Uint8Array(this.buffer.slice(0));
+            GlitchHelper.prototype.getImage = function(){
+                return this.createObjectURL(this.buffer);
+            }
 
-    			var nChars = ui8aBuffer[ui8aBuffer.length-1];
-			    var startBuffer = 1000;
-			    var skipBuffer = Math.round((ui8aBuffer.length - startBuffer) / nChars*0.9 ); //0.9 for the border
-			    var iBuffer = startBuffer;
-			    var decodedText = '';
+            GlitchHelper.prototype.encode = function(text){
+                var copy = new Uint8Array(this.buffer.slice(0));
+                return this.createObjectURL(exports.Glitcher.encode(copy,text));
+            }
 
-			    for (var i = 0; i<nChars; i++) {
-			      iBuffer = startBuffer + i*skipBuffer;
+            GlitchHelper.prototype.decode = function(){
+                return exports.Glitcher.decode(this.buffer);
+            }
 
-			      var ansiiCode = ui8aBuffer[iBuffer];
-			      decodedText += String.fromCharCode(ansiiCode);
-			    }			    
-			    return decodedText;
-    		}
-
-    		Glitcher.prototype.createObjectURL = function(buffer) {
-    			var blob = new Blob([buffer], { type:this.type });
-    			var url = webkitURL.createObjectURL(blob);
-    			return url;
-    		}
-
-    		Glitcher.prototype.getOriginal = function() {
-    			return this.createObjectURL(this.buffer);
-    		}
-
-    		Glitcher.prototype.glitch = function(text) {
-    			var ui8aBuffer = new Uint8Array(this.buffer.slice(0));
-
-    			var startBuffer = 1000;
-    			var skipBuffer = Math.round((ui8aBuffer.length - startBuffer) / text.length*0.9 );
-    			var iBuffer = startBuffer;
-
-    			for (var i = 0; i<text.length; i++) {
-    				iBuffer = startBuffer + i*skipBuffer
-
-    				var asciiCode = text.charCodeAt(i);
-
-    				ui8aBuffer[iBuffer] = asciiCode;
-    				//console.log('Writing " ' + text.charAt(i) + '" to index: ' + iBuffer);
-    			};
-
-    			// store number of chars in last byte
-    			ui8aBuffer[ui8aBuffer.length-1] = text.length;
-    			// store glitch bit
-    			ui8aBuffer[ui8aBuffer.length-2] = 0;
-
-    			return this.createObjectURL(ui8aBuffer.buffer);
-    		}
+            GlitchHelper.prototype.isGlitched = function(){
+                return exports.Glitcher.isGlitched(this.buffer);
+            }
 
 
     	});
