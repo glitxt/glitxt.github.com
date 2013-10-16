@@ -116,15 +116,17 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript">
-    var exports = {}; // nodePackageOwnage
-    </script>
-    <script src="http://glitxt.com/glitxt/lib/index.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    var module = {}; // nodePackageOwnage
+    </script>
+    <script src="http://glitxt.com/glitxt/lib/index.js"></script>
+
     <script>
     	$(function() {
 
+            var Glitcher = module.exports;
     		var imageGlitch = null;
 
             $('#image').click(function(){
@@ -214,15 +216,15 @@
 
             GlitchHelper.prototype.encode = function(text){
                 var copy = new Uint8Array(this.buffer.slice(0));
-                return this.createObjectURL(exports.Glitcher.encode(copy,text));
+                return this.createObjectURL(Glitcher.encode(copy,text));
             }
 
             GlitchHelper.prototype.decode = function(){
-                return exports.Glitcher.decode(this.buffer);
+                return Glitcher.decode(this.buffer);
             }
 
             GlitchHelper.prototype.isGlitched = function(){
-                return exports.Glitcher.isGlitched(this.buffer);
+                return Glitcher.isGlitched(this.buffer);
             }
 
 
