@@ -37,17 +37,22 @@
             return;
           }
           if (type.match(options.matchType) || clipboardData.items[i].type.match(options.matchType)) {
+            // file = clipboardData.items[i].getAsFile();
+            // reader = new FileReader();
+            // reader.onload = function(evt) {
+            //   return options.callback.call(element, {
+            //     dataURL: evt.target.result,
+            //     event: evt,
+            //     file: file,
+            //     name: file.name
+            //   });
+            // };
+            // reader.readAsDataURL(file);
             file = clipboardData.items[i].getAsFile();
-            reader = new FileReader();
-            reader.onload = function(evt) {
-              return options.callback.call(element, {
-                dataURL: evt.target.result,
-                event: evt,
-                file: file,
-                name: file.name
-              });
-            };
-            reader.readAsDataURL(file);
+            options.callback.call(element, {
+              files:[file]
+            });
+
             return found = true;
           }
         });

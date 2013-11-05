@@ -162,6 +162,9 @@
                 <h3>About</h3>
                 <p>Glitxt was kickstarted during <a href="http://arthackday.net/berlin/">Art Day Hack 2013</a> at LEAP Berlin. Related to the theme "going dark", we wanted a way to encode a message in a picture to conceal the text, but also make it obvious to the human eye that the image is hiding something. It is not an advanced encryption method, but it still makes it difficult for automated data mining programs to extract the message hidden in the image.
                 </p>
+                <p>
+                <a href="http://www.chrispie.com">Christopher Pietsch</a>, <a href="http://www.wrong-entertainment.com/">Paul Vollmer</a>, <a href="http://www.timpulver.de/">Tim Pulver</a>
+                </p>
             </div>
         </div>
     </div><!-- /.container -->
@@ -172,14 +175,9 @@
           <div class="col-md-12">
               <h3>API</h3>
               <p>
-              <a href="http://api.glitxt.com/docs/index.html">Api Documentation</a>
-              DECODE
-              GET decode
-              ENCODE
-              GET encode
-              PING
-              GET ping
-
+              <a href="http://api.glitxt.com/docs/index.html">Api Documentation</a> You can use our Api to decode or encode pictures on our server. The live glitching tool above is made in HTML5 + JS and runs in your browser. 
+                <pre>curl -i http://api.glitxt.com/decode?source=https://dl.dropboxusercontent.com/u/2874680/glitxt/hello-world.gif</pre>
+                <pre>http://api.glitxt.com/encode?text=hello&source=http://glitxt.com/glitxt/test/files/test.gif</pre>
               </p>
           </div>
       </div>
@@ -207,9 +205,43 @@
 
             var Glitcher = module.exports;
     		var imageGlitch = null;
+            var URLObj = window.URL || window.webkitURL;
 
-            $("html").pasteImageReader(function(results) {
-                fileHandler([results.file]);
+            $("html").on('paste',function(event) {
+                var clipboardData = event.clipboardData  ||  event.originalEvent.clipboardData;
+                console.log(clipboardData);
+                var url = clipboardData.getData("Text");
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function(){
+                    if (this.readyState == 4 && this.status == 200){
+                        //handler(this.response);
+                        console.log(this.response, typeof this.response);
+                    }
+                }
+                xhr.open('GET', url);
+                xhr.responseType = 'blob';
+                xhr.send();  
+                /*
+                var items = clipboardData.items;
+                var blob=null;
+                var url=null;
+                  for (var i = 0; i < items.length; i++) {
+                    console.log(JSON.stringify(items[i]));
+                    if (items[i].type.indexOf("image") === 0) {
+                      blob = items[i].getAsFile();
+                    }
+                    else if (items[i].type.indexOf("text") === 0) {
+                      url = items[i].getAsText();
+                    }
+                  }
+                  if (blob !== null) {
+                    console.log("freakin shit, this is an bitmap now :(",JSON.stringify(blob));
+                  }
+                  if (url !== null) {
+                    console.log(url);
+                  }
+                  */
+                //fileHandler(data.files[0]);
             });
 
             $('#image').click(function(){
@@ -260,11 +292,11 @@
 
     		var fileHandler = function(files) {
     			
-                console.log(files);
-
     			if(files.length>0){
 
     				var file = files[0];
+
+                    console.log(file)
 
     				$('#placeholder').hide();
     				$('#text').val("");
@@ -290,12 +322,19 @@
             var GlitchHelper = function(buffer,type){
                 this.buffer = buffer;
                 this.type = type;
+                this.url = null;
+            }
+
+            GlitchHelper.prototype.delete = function() {
+                URLObj.revokeObjectURL(this.url);
             }
 
             GlitchHelper.prototype.createObjectURL = function(buffer) {
+                URLObj.revokeObjectURL(this.url);
+
                 var blob = new Blob([buffer], { type:this.type });
-                var url = webkitURL.createObjectURL(blob);
-                return url;
+                this.url = URLObj.createObjectURL(blob);
+                return this.url;
             }
 
             GlitchHelper.prototype.getImage = function(){
@@ -303,17 +342,19 @@
             }
 
             GlitchHelper.prototype.encode = function(text){
-                var copy = new Uint8Array(this.buffer.slice(0));
-                console.log(copy.length)
-                return this.createObjectURL(Glitcher.encode(copy,text));
+                var view = new Uint8Array(this.buffer.slice(0));
+                console.log(view.length,view[view.length-1])
+                return this.createObjectURL(Glitcher.encode(view,text));
             }
 
             GlitchHelper.prototype.decode = function(){
-                return Glitcher.decode(this.buffer);
+                var view = new Uint8Array(this.buffer);
+                return Glitcher.decode(view);
             }
 
             GlitchHelper.prototype.isGlitched = function(){
-                return Glitcher.isGlitched(this.buffer);
+                var view = new Uint8Array(this.buffer);
+                return Glitcher.isGlitched(view);
             }
 
 
