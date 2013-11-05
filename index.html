@@ -1,1 +1,370 @@
-Steganography for the popculture
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href='http://fonts.googleapis.com/css?family=Megrim' rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="ico/favicon.png">
+
+    <title>ⒼⱢ𐌆イ×イ</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <style type="text/css">
+    	body {
+    	  padding-top: 50px;
+          padding-bottom: 50px;
+          background: url(img/squairy_light.png);
+    	}
+        .navbar-brand {
+            font-family: 'Megrim';
+        }
+        .navbar-inverse .navbar-brand {
+            color: #F1F1F1;
+        }
+        .jumbotron {
+            background-color: rgba(0, 0, 0, 0.89);
+            padding-top: 70px;
+            padding-bottom: 70px;
+        }
+        .jumbotron.active {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+    	.starter-template {
+    	  padding: 40px 15px;
+    	  text-align: center;
+    	}
+    	.placeholder .desc {
+    		opacity: 0.7;
+    	}
+    	.placeholder .icon {
+    		opacity: 0.3;
+    		font-size: 84px;
+    		padding-bottom: 20px;
+    	}
+    	#payload, #file {
+    		display: none;
+            cursor: -webkit-zoom-in;
+    	}
+        .row .padding{
+            padding-bottom: 20px;
+        }
+    	.drop {
+    		cursor: pointer;
+            color:#FFF;
+    	}
+        #payload .close {
+            opacity: 0.8;
+            color: #FFF;
+            position: absolute;
+            font-size: 23px;
+            top: 25px;
+            right: 45px;
+            cursor: pointer;
+        }
+        #payload .close:hover {
+            opacity: 1;
+        }
+        .img-responsive{
+            display: inline;
+        }
+        .form-control {
+            border-radius: 0px;
+        }
+        h1, h2, h3 {
+            font-family: 'Megrim';
+        }
+
+    </style>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div id="navbar" class="navbar navbar-fixed-top navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">glitxt</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="#tool">Tool</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#api">API</a></li>
+            <li><a href="http://blog.glitxt.com">Blog</a></li>
+            <li><a href="https://github.com/glitxt">Github</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container" id="start">
+      <div class="starter-template">
+        <img src="img/logo.png">
+        <h1>steganography for the popculture</h1>
+        <p class="lead">a tool which uses image glitches to store information</p>
+      </div>
+    </div>
+
+    <div class="jumbotron" id="tool">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12 padding">
+                <textarea class="text form-control"  id="text"></textarea>
+            </div>
+            <div class="col-lg-12">
+                <div id="drop" class="drop text-center">
+                    <div id="placeholder" class="placeholder">
+                        <div class="icon glyphicon glyphicon-picture" style="display:none;"></div>
+                        <div class="desc">drop an image here to encode or decode</div>
+                    </div>
+                <div id="payload">
+                    <img id="image" class="img-responsive">
+                    <span class="close glyphicon glyphicon-remove"></span>
+                </div>
+                </div>
+                
+            </div>
+          </div>
+        </div><!-- /.container -->
+     </div>
+
+    <div class="container" id="faq">
+    
+      <div class="row">
+        <div class="col-md-12">
+            <h3>FAQ</h3>
+            <p>
+            <ul>
+                <li>Add an image in the area on the right using drag and drop or by clicking in the box. (this can be used for decoding too)</li>
+                <li>Type a message in the area on the left to see how the image glitches depending on the text you enter</li>
+                <li>You should use the latest Browser for this</li>
+                <li>Animated GIFs works best with Firefox or Safari</li>
+                <li>No Message or Image is stored on our server. The en/decoder runs entirely in the browser.</li>
+            </ul>
+            </p>
+        </div>
+    </div>
+    </div>
+
+    <div class="container" id="about">
+        <div class="row">
+            <div class="col-md-12">
+                <h3>About</h3>
+                <p>Glitxt was kickstarted during <a href="http://arthackday.net/berlin/">Art Day Hack 2013</a> at LEAP Berlin. Related to the theme "going dark", we wanted a way to encode a message in a picture to conceal the text, but also make it obvious to the human eye that the image is hiding something. It is not an advanced encryption method, but it still makes it difficult for automated data mining programs to extract the message hidden in the image.
+                </p>
+                <p>
+                <a href="http://www.chrispie.com">Christopher Pietsch</a>, <a href="http://www.wrong-entertainment.com/">Paul Vollmer</a>, <a href="http://www.timpulver.de/">Tim Pulver</a>
+                </p>
+            </div>
+        </div>
+    </div><!-- /.container -->
+
+
+  <div class="container" id="api">
+      <div class="row">
+          <div class="col-md-12">
+              <h3>API</h3>
+              <p>
+              <a href="http://api.glitxt.com/docs/index.html">Api Documentation</a> You can use our Api to decode or encode pictures on our server. The live glitching tool above is made in HTML5 + JS and runs in your browser. 
+                <pre>curl -i http://api.glitxt.com/decode?source=https://dl.dropboxusercontent.com/u/2874680/glitxt/hello-world.gif</pre>
+                <pre>http://api.glitxt.com/encode?text=hello&source=http://glitxt.com/glitxt/test/files/test.gif</pre>
+              </p>
+          </div>
+      </div>
+  </div><!-- /.container -->
+  
+    <input type="file" id="file" accept="image/*"/>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/paste.js"></script>
+
+    <script type="text/javascript">
+    var module = {}; // nodePackageOwnage
+    </script>
+    <script src="http://glitxt.com/glitxt/lib/index.js"></script>
+
+    <script>
+    	$(function() {
+
+            //$('body').scrollspy({ target: '#navbar'});
+            // why you not work ?
+
+            var Glitcher = module.exports;
+    		var imageGlitch = null;
+            var URLObj = window.URL || window.webkitURL;
+
+            $("html").on('paste',function(event) {
+                var clipboardData = event.clipboardData  ||  event.originalEvent.clipboardData;
+                console.log(clipboardData);
+                var url = clipboardData.getData("Text");
+                // var xhr = new XMLHttpRequest();
+                // xhr.onreadystatechange = function(){
+                //     if (this.readyState == 4 && this.status == 200){
+                //         //handler(this.response);
+                //         console.log(this.response, typeof this.response);
+                //     }
+                // }
+                // xhr.open('GET', url);
+                // xhr.responseType = 'blob';
+                // xhr.send();  
+                /*
+                var items = clipboardData.items;
+                var blob=null;
+                var url=null;
+                  for (var i = 0; i < items.length; i++) {
+                    console.log(JSON.stringify(items[i]));
+                    if (items[i].type.indexOf("image") === 0) {
+                      blob = items[i].getAsFile();
+                    }
+                    else if (items[i].type.indexOf("text") === 0) {
+                      url = items[i].getAsText();
+                    }
+                  }
+                  if (blob !== null) {
+                    console.log("freakin shit, this is an bitmap now :(",JSON.stringify(blob));
+                  }
+                  if (url !== null) {
+                    console.log(url);
+                  }
+                  */
+                //fileHandler(data.files[0]);
+            });
+
+            $('#image').click(function(){
+                window.open($(this).attr('src'));
+            });
+            $('#drop .close').click(function(){
+                $('#placeholder').show();
+                $('#text').val("");
+                $('#payload').hide();
+            })
+
+    		$('#text').keyup(function(e){
+    		  if(e.keyCode == 13) {
+    		    //alert("glitchified");
+                return false;
+    		  } else {
+    		  	if(imageGlitch){
+    		  		 var url = imageGlitch.encode( $(this).val() );
+    		  		 $('#image').attr('src',url);
+    		  	}
+    		  }
+    		});
+
+    		$('#tool')
+                .on('dragover', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).addClass('active');
+                })
+                .on('dragenter', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).addClass('active');
+                })
+    			.on('drop',function(e){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).removeClass('active');
+    				fileHandler(e.originalEvent.dataTransfer.files);
+    			})
+                .find('#placeholder').on('click',function(){
+    				$("#file").trigger('click');
+    			})
+
+    		$("#file").on('change',function(e){
+    			fileHandler(e.target.files);
+    		});
+
+    		var fileHandler = function(files) {
+    			
+    			if(files.length>0){
+
+    				var file = files[0];
+
+    				$('#placeholder').hide();
+    				$('#text').val("");
+                    $('#payload').show();
+    				//$('#image').hide().attr('src','');
+
+    				var reader = new FileReader();
+    				reader.onload = function(e) {
+    					imageGlitch = new GlitchHelper(this.result,file.type);
+
+    					if(imageGlitch.isGlitched()){
+    						$('#text').val(imageGlitch.decode());
+    					}
+
+    					$('#image').attr('src',imageGlitch.getImage());
+
+    				}
+    				reader.readAsArrayBuffer(file);
+    			};
+    			return true;
+    		}
+
+            var GlitchHelper = function(buffer,type){
+                this.buffer = buffer;
+                this.type = type;
+                this.url = null;
+            }
+
+            GlitchHelper.prototype.delete = function() {
+                URLObj.revokeObjectURL(this.url);
+            }
+
+            GlitchHelper.prototype.createObjectURL = function(buffer) {
+                URLObj.revokeObjectURL(this.url);
+
+                var blob = new Blob([buffer], { type:this.type });
+                this.url = URLObj.createObjectURL(blob);
+                return this.url;
+            }
+
+            GlitchHelper.prototype.getImage = function(){
+                return this.createObjectURL(this.buffer);
+            }
+
+            GlitchHelper.prototype.encode = function(text){
+                var view = new Uint8Array(this.buffer.slice(0));
+                //console.log(view.length,view[view.length-1])
+                return this.createObjectURL(Glitcher.encode(view,text));
+            }
+
+            GlitchHelper.prototype.decode = function(){
+                var view = new Uint8Array(this.buffer);
+                return Glitcher.decode(view);
+            }
+
+            GlitchHelper.prototype.isGlitched = function(){
+                var view = new Uint8Array(this.buffer);
+                return Glitcher.isGlitched(view);
+            }
+
+
+    	});
+
+    </script>
+  </body>
+</html>
