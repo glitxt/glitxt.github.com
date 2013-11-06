@@ -170,8 +170,14 @@
                 <p>Glitxt was kickstarted during <a href="http://arthackday.net/berlin/">Art Day Hack 2013</a> at LEAP Berlin. Related to the theme "going dark", we wanted a way to encode a message in a picture to conceal the text, but also make it obvious to the human eye that the image is hiding something. It is not an advanced encryption method, but it still makes it difficult for automated data mining programs to extract the message hidden in the image.
                 </p>
                 <p>
-                <a href="http://www.chrispie.com">Christopher Pietsch</a>, <a href="http://www.wrong-entertainment.com/">Paul Vollmer</a>, <a href="http://www.timpulver.de/">Tim Pulver</a>
+                This is a project of <a href="http://www.chrispie.com">Christopher Pietsch</a>, <a href="http://www.wrong-entertainment.com/">Paul Vollmer</a>, <a href="http://www.timpulver.de/">Tim Pulver</a>
                 </p>
+               <p>
+                Drop us a line via <a href="mailto:glitxt.com@gmail.com" target="_blank">Email</a> or <a href="https://twitter.com/glitxt" target="_blank">Twitter</a>
+                </p>
+<!--                    <li><a href="https://github.com/glitxt" target="_blank">Github</a></li>
+                    <li><a href="http://blog.glitxt.com/" target="_blank">Blog</a></li> -->
+               
             </div>
         </div>
     </div><!-- /.container -->
@@ -191,6 +197,25 @@
   </div><!-- /.container -->
   
     <input type="file" id="file" accept="image/*"/>
+
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">HTML5</h4>
+          </div>
+          <div class="modal-body">
+            <p>Hey there, you are trying to use our cutting edge HTML5 glitchifier but it seems that your
+            Browser doesn't support it.
+            </p>
+            <p>Use the <a href="http://browsehappy.com/" target="_blank">latest</a> Chrome, Firefox or Safari to have this working.
+            And yes we are working on an fallback version!</p>
+            <div class="error"></div>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -213,6 +238,11 @@
             var Glitcher = module.exports;
     		var imageGlitch = null;
             var URLObj = window.URL || window.webkitURL;
+            var error = function(err){
+                $('#errorModal').modal('show')
+                    .find('.error')
+                    .text(JSON.stringify(err.message));
+            }
 
             $("html").on('paste',function(event) {
                 var clipboardData = event.clipboardData  ||  event.originalEvent.clipboardData;
@@ -251,6 +281,10 @@
                 //fileHandler(data.files[0]);
             });
 
+      
+
+
+
             $('#image').click(function(){
                 window.open($(this).attr('src'));
             });
@@ -266,8 +300,10 @@
                 return false;
     		  } else {
     		  	if(imageGlitch){
+                    try {
     		  		 var url = imageGlitch.encode( $(this).val() );
     		  		 $('#image').attr('src',url);
+                    } catch(err){ error(err); }
     		  	}
     		  }
     		});
@@ -298,31 +334,33 @@
     		});
 
     		var fileHandler = function(files) {
-    			
-    			if(files.length>0){
+    		  try {
+                if(files.length>0){
 
-    				var file = files[0];
+                	var file = files[0];
 
-    				$('#placeholder').hide();
-    				$('#text').val("");
+                	$('#placeholder').hide();
+                	$('#text').val("");
                     $('#payload').show();
-    				//$('#image').hide().attr('src','');
+                	//$('#image').hide().attr('src','');
 
-    				var reader = new FileReader();
-    				reader.onload = function(e) {
-    					imageGlitch = new GlitchHelper(this.result,file.type);
+                	var reader = new FileReader();
+                	reader.onload = function(e) {
+                		imageGlitch = new GlitchHelper(this.result,file.type);
 
-    					if(imageGlitch.isGlitched()){
-    						$('#text').val(imageGlitch.decode());
-    					}
+                		if(imageGlitch.isGlitched()){
+                			$('#text').val(imageGlitch.decode());
+                		}
 
-    					$('#image').attr('src',imageGlitch.getImage());
+                		$('#image').attr('src',imageGlitch.getImage());
 
-    				}
-    				reader.readAsArrayBuffer(file);
-    			};
-    			return true;
+                	}
+                	reader.readAsArrayBuffer(file);
+                };
+                return true;
+               } catch(err){ error(err) }
     		}
+
 
             var GlitchHelper = function(buffer,type){
                 this.buffer = buffer;
